@@ -282,12 +282,10 @@
 
                 function setupReturnButton() {
                     const lastLink = sessionStorage.getItem('lastOpenedLink');
-                    const lastName = sessionStorage.getItem('lastOpenedTableName');
-
-                    if (lastLink && lastName) {
+                    if (lastLink) {
                         const returnBtn = document.createElement("button");
                         returnBtn.className = "return-btn";
-                        returnBtn.innerHTML = `Return to Table <strong>${lastName}</strong>`;
+                        returnBtn.textContent = 'Torna Indietro';
                         returnBtn.addEventListener('click', () => {
                             window.open(lastLink, '_blank');
                         });
