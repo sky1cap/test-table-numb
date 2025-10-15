@@ -281,11 +281,20 @@
                 const mainContainer = document.querySelector(".container");
 
                 function setupReturnButton() {
+                    // First, remove any existing return button to avoid duplicates
+                    const existingBtn = passcodeContent.querySelector('.return-btn');
+                    if (existingBtn) {
+                        existingBtn.remove();
+                    }
+
                     const lastLink = sessionStorage.getItem('lastOpenedLink');
-                    if (lastLink) {
+                    const lastTableName = sessionStorage.getItem('lastOpenedTableName');
+                    
+                    if (lastLink && lastTableName) {
                         const returnBtn = document.createElement("button");
                         returnBtn.className = "return-btn";
-                        returnBtn.textContent = 'Torna Indietro';
+                        // Use innerHTML to allow for the <strong> tag for better styling
+                        returnBtn.innerHTML = `Return to last table: <strong>${lastTableName}</strong>`;
                         returnBtn.addEventListener('click', () => {
                             window.open(lastLink, '_blank');
                         });
@@ -340,6 +349,15 @@
                     }
                 }
                 
+                function resetToPasscodeScreen() {
+                    mainContainer.classList.remove("unlocked");
+                    passcodeOverlay.style.display = "flex";
+                    passcodeOverlay.classList.remove("unlocked");
+                    enteredPasscode = "";
+                    updatePasscodeDisplay();
+                    setupReturnButton(); // Re-run setup to show the latest table button
+                }
+                
                 passcodeKeypad.addEventListener("click", (e) => {
                     const key = e.target.closest(".passcode-key");
                     if (!key || !key.dataset.key) return;
@@ -383,8 +401,11 @@
                                 sessionStorage.setItem('lastOpenedTableName', cleanNameForDisplay(table.name));
                                 
                                 window.open(table.link, '_blank');
+                                
+                                // After opening the link, wait a moment then reset to the lock screen
                                 setTimeout(() => {
                                     e.currentTarget.classList.remove("selected");
+                                    resetToPasscodeScreen();
                                 }, 500);
                             });
                             buttonGrid.appendChild(btn);
