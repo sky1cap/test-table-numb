@@ -203,7 +203,7 @@
         .passcode-key { width: 70px; height: 70px; font-size: 1.8rem; font-weight: 600; border-radius: 50%; border: none; background: var(--surface-primary); color: var(--text-primary); cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; }
         .passcode-key:active { background: var(--accent-primary); color: var(--bg-primary); transform: scale(0.95); }
         .passcode-key.delete-key { background: var(--surface-light); }
-
+        
         /* --- Style for the new Return Button --- */
         .return-btn {
             width: 100%;
@@ -230,6 +230,7 @@
         .return-btn:hover strong {
             color: var(--bg-primary);
         }
+
     </style>
 </head>
 <body>
@@ -281,7 +282,6 @@
                 const mainContainer = document.querySelector(".container");
 
                 function setupReturnButton() {
-                    // First, remove any existing return button to avoid duplicates
                     const existingBtn = passcodeContent.querySelector('.return-btn');
                     if (existingBtn) {
                         existingBtn.remove();
@@ -293,7 +293,6 @@
                     if (lastLink && lastTableName) {
                         const returnBtn = document.createElement("button");
                         returnBtn.className = "return-btn";
-                        // Use innerHTML to allow for the <strong> tag for better styling
                         returnBtn.innerHTML = `Return to last table: <strong>${lastTableName}</strong>`;
                         returnBtn.addEventListener('click', () => {
                             window.open(lastLink, '_blank');
@@ -301,7 +300,7 @@
                         passcodeContent.appendChild(returnBtn);
                     }
                 }
-                
+
                 function createPasscodeKeypad() {
                     const keys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "", "0", "delete"];
                     passcodeKeypad.innerHTML = "";
@@ -355,7 +354,7 @@
                     passcodeOverlay.classList.remove("unlocked");
                     enteredPasscode = "";
                     updatePasscodeDisplay();
-                    setupReturnButton(); // Re-run setup to show the latest table button
+                    setupReturnButton();
                 }
                 
                 passcodeKeypad.addEventListener("click", (e) => {
@@ -374,7 +373,7 @@
                 });
 
                 createPasscodeKeypad();
-                setupReturnButton();
+                setupReturnButton(); // Initial check on page load
                 updatePasscodeDisplay();
 
                 function initializeApp() {
@@ -402,7 +401,6 @@
                                 
                                 window.open(table.link, '_blank');
                                 
-                                // After opening the link, wait a moment then reset to the lock screen
                                 setTimeout(() => {
                                     e.currentTarget.classList.remove("selected");
                                     resetToPasscodeScreen();
@@ -417,9 +415,11 @@
                         if (match) {
                             sessionStorage.setItem('lastOpenedLink', match.link);
                             sessionStorage.setItem('lastOpenedTableName', cleanNameForDisplay(match.name));
-
+                            
                             window.open(match.link, '_blank');
                             closeModal();
+                            
+                            setTimeout(resetToPasscodeScreen, 500);
                         }
                     }
 
@@ -428,6 +428,9 @@
                     modalInput.addEventListener("input", () => { const searchTerm = normalizeString(modalInput.value); suggestionsContainer.innerHTML = ""; sendBtn.style.display = "none"; if (!searchTerm) return; const matches = tablesData.filter(t => normalizeString(t.name).startsWith(searchTerm)); if (matches.length === 1 && normalizeString(matches[0].name) === searchTerm) sendBtn.style.display = "block"; matches.slice(0, 5).forEach(table => { if (normalizeString(table.name) === searchTerm) return; const item = document.createElement("div"); item.className = "suggestion-item"; item.textContent = cleanNameForDisplay(table.name); item.addEventListener("click", (e) => { e.currentTarget.classList.add("selected"); navigateToTable(cleanNameForDisplay(table.name)); }); suggestionsContainer.appendChild(item); }); });
                     renderMainGridButtons(tablesData);
                 }
+                
+                updatePasscodeDisplay();
+
             } catch (error) {
                 document.body.innerHTML = `<div style="color: white; text-align: center; padding: 40px;">An error occurred. Please try restarting the application.</div>`;
                 console.error("Application Error:", error);
