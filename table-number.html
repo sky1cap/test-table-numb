@@ -2,466 +2,119 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Bite Sushi House</title>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#000000"/>
-    <link rel="manifest" href="manifest.json" id="manifest-link">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table QR Codes</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root {
-            --bg-primary: #000000;
-            --bg-secondary: #000000;
-            --surface-primary: #141b2e;
-            --surface-secondary: #1a2340;
-            --surface-tertiary: #2a3754;
-            --surface-light: #1f2942;
-            --accent-primary: #00ff9b;
-            --accent-secondary: #30ffad; 
-            --accent-gradient-start: #00e68a;
-            --delete-primary: #ff6666;
-            --delete-secondary: #ff4d4d;
-            --text-primary: #ffffff;
-            --text-secondary: #b8c5d6;
-            --text-muted: #6b7a94;
-            --border-primary: #2a3754;
-            --glass-bg: rgba(20, 27, 46, 0.7);
+        /* A little custom style for the button transition */
+        .btn {
+            transition: all 0.2s ease-in-out;
         }
-
-        @import url("https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700;800&display=swap");
-        @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700&display=swap");
-
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        html, body { 
-            height: 100%; 
+        .btn:hover {
+            transform: scale(1.05);
         }
-
-        body {
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            font-family: "Urbanist", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            height: 100vh;
-            padding: 0;
-        }
-        
-        body::after {
-            content: '';
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 200px;
-            background: linear-gradient(to top, var(--bg-primary), transparent);
-            pointer-events: none;
-            z-index: 10;
-        }
-        
-        #content-frame {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            border: none;
-            z-index: 10001;
-        }
-
-        .hidden { display: none !important; }
-        
-        .container {
-            width: 100%;
-            height: 100%;
-            max-width: 1200px;
-            padding: 70px 70px 0;
-            text-align: center;
-            position: relative;
-            display: none;
-            flex-direction: column;
-        }
-        .container.unlocked { 
-            display: flex; 
-            animation: fadeIn 0.5s ease-in-out; 
-        }
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
-
-        .header-section { margin-bottom: 15px; position: relative; flex-shrink: 0; }
-        h1 {
-            margin: 0;
-            font-size: clamp(2.2rem, 5vw, 3rem);
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-secondary) 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -1.5px;
-            margin-bottom: 8px;
-            position: relative;
-        }
-        
-        #open-modal-btn {
-            width: 100%;
-            padding: 20px 30px;
-            font-size: 1.3rem;
-            font-weight: 700;
-            font-family: 'Urbanist', sans-serif;
-            background: rgb(16, 185, 129);
-            color: white;
-            border: none;
-            border-radius: 16px;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            margin-bottom: 30px;
-            position: relative;
-            overflow: hidden;
-            flex-shrink: 0;
-        }
-        #open-modal-btn:active { transform: translateY(0) scale(0.98); }
-
-        #button-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-            gap: 16px;
-            overflow-y: auto;
-            padding-bottom: 200px;
-            background: transparent;
-            border: none;
-            flex-grow: 1;
-            scrollbar-width: none;
-        }
-        #button-grid::-webkit-scrollbar { 
-            display: none;
-        }
-        .table-btn {
-            background: var(--surface-secondary);
-            color: var(--text-primary);
-            border: none;
-            padding: 40px 12px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .table-btn:active { transform: translateY(-2px) scale(1.02); }
-
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: none; align-items: center; justify-content: center; padding: 20px; z-index: 1000; }
-        .modal-content { background: var(--glass-bg); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); width: 100%; max-width: 550px; border-radius: 24px; padding: 40px; animation: modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1); position: relative; }
-        @keyframes modalSlideIn { from { opacity: 0; transform: translateY(-30px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
-        .modal-content h2 { margin: 0 0 25px 0; font-size: 1.5rem; font-weight: 700; color: var(--text-primary); letter-spacing: -0.5px; text-align: center; }
-        #modal-close-btn { position: absolute; top: 15px; right: 15px; width: 40px; height: 40px; font-size: 1.5rem; font-weight: 600; color: var(--text-muted); background: var(--surface-secondary); border: 1px solid var(--border-primary); border-radius: 50%; cursor: pointer; line-height: 1; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; }
-        #modal-table-input { width: 100%; padding: 20px 24px; font-size: 2.5rem; text-align: center; background: var(--surface-primary); border: 2px solid var(--border-primary); border-radius: 16px; color: var(--text-primary); margin-bottom: 20px; font-family: "Urbanist", sans-serif; font-weight: 600; transition: all 0.3s ease; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
-        #modal-table-input:focus { outline: none; border-color: var(--accent-primary); }
-        #modal-suggestions { max-height: 180px; overflow-y: auto; margin-bottom: 15px;  border-radius: 12px; background: var(--surface-primary); border: 1px solid var(--border-primary); }
-        .suggestion-item { padding: 18px 20px; font-size: 1.3rem; text-align: center; cursor: pointer; transition: all 0.2s ease; }
-        #modal-send-btn { display: none; width: 100%; padding: 18px 20px; font-size: 1.3rem; font-weight: 700; background: var(--accent-primary); color: var(--bg-primary); border: none; border-radius: 12px; cursor: pointer; transition: all 0.2s ease; margin-top: 10px; margin-bottom: 15px; }
-        #keypad { display: flex; flex-direction: column; gap: 15px; }
-        .keypad-row { display: flex; justify-content: center; gap: 15px; }
-        .keypad-btn { flex: 1; padding: 20px 0; font-size: 1.6rem; font-weight: 600; border-radius: 12px; border: 1px solid var(--border-primary); background: var(--surface-secondary); color: var(--text-primary); cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; font-family: "Urbanist", sans-serif; display: flex; align-items: center; justify-content: center; }
-        .keypad-btn.key-char { background: #394764; }
-        .keypad-btn.delete-key { background: var(--delete-primary); flex: 2; }
-        .keypad-btn.key-space { flex: 3; }
-        .keypad-btn:active { background: var(--accent-primary); color: var(--bg-primary); transform: scale(0.95); }
-        .keypad-btn:active svg { fill: var(--bg-primary); }
-        .keypad-btn.delete-key:active { background: var(--delete-secondary); color: var(--text-primary); }
-        .keypad-btn.delete-key:active svg { fill: var(--text-primary); }
-        .table-btn.selected, .suggestion-item.selected { background: var(--accent-primary) !important; color: var(--bg-primary) !important; transform: scale(1.05); border-color: var(--accent-secondary) !important; }
-        
-        @media (hover: hover) and (pointer: fine) { 
-            .table-btn:hover { background: var(--accent-primary); color: var(--bg-primary); border-color: var(--accent-primary); } 
-            #modal-close-btn:hover { color: var(--bg-primary); background: var(--accent-primary); border-color: var(--accent-secondary); } 
-            .suggestion-item:hover { background: var(--accent-primary); color: var(--bg-primary); } 
-        }
-        @media (max-width: 768px) { 
-            .container { padding: 40px 40px 0; }
-            #button-grid { grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 12px; } 
-            .modal-content { margin: 15px; padding: 25px; max-width: 100%; } 
-        }
-        
-        #passcode-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-primary); display: flex; align-items: center; justify-content: center; z-index: 9999; transition: opacity 0.4s ease-out; opacity: 1; }
-        #passcode-overlay.unlocked { opacity: 0; pointer-events: none; }
-        #passcode-content { width: 100%; max-width: 320px; padding: 30px; text-align: center; }
-        #passcode-content h2 { font-size: 1.4rem; font-weight: 600; margin-bottom: 25px; color: var(--text-secondary); font-family: 'Urbanist', sans-serif; }
-        #passcode-display { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; }
-        .passcode-digit { width: 20px; height: 20px; background: transparent; border: 2px solid var(--border-primary); border-radius: 50%; transition: all 0.2s ease; }
-        .passcode-digit.filled { background: var(--accent-primary); border-color: var(--accent-primary); transform: scale(1.1); }
-        #passcode-display.shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
-        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
-        #passcode-keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-        .passcode-key { width: 70px; height: 70px; font-size: 1.8rem; font-weight: 600; border-radius: 50%; border: none; background: var(--surface-primary); color: var(--text-primary); cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; }
-        .passcode-key:active { background: var(--accent-primary); color: var(--bg-primary); transform: scale(0.95); }
-        .passcode-key.delete-key { background: var(--surface-light); }
-        
-        /* --- Style for the new Return Button --- */
-        .return-btn {
-            width: 100%;
-            padding: 15px;
-            font-size: 1rem;
-            font-weight: 600;
-            font-family: 'Urbanist', sans-serif;
-            background: var(--surface-light);
-            color: var(--text-secondary);
-            border: 1px solid var(--border-primary);
-            border-radius: 12px;
-            cursor: pointer;
-            margin-top: 25px;
-            transition: all 0.2s ease;
-        }
-        .return-btn:active, .return-btn:hover {
-            background: var(--accent-primary);
-            color: var(--bg-primary);
-            border-color: var(--accent-secondary);
-        }
-        .return-btn strong {
-            color: var(--text-primary);
-        }
-        .return-btn:hover strong {
-            color: var(--bg-primary);
-        }
-
     </style>
 </head>
-<body>
-    
-    <div id="passcode-overlay">
-        <div id="passcode-content">
-            <h2>Enter Passcode</h2>
-            <div id="passcode-display">
-                <span class="passcode-digit"></span><span class="passcode-digit"></span><span class="passcode-digit"></span><span class="passcode-digit"></span>
-            </div>
-            <div id="passcode-keypad"></div>
+<body class="bg-gray-100 font-sans">
+
+    <!-- Main container for button grid -->
+    <main id="button-view" class="min-h-screen flex flex-col items-center justify-center p-4">
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-8 text-center">Select a Table</h1>
+        <!-- Responsive grid for the buttons -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 md:gap-8 w-full max-w-4xl">
+            <!-- Button 01 -->
+            <button data-url="https://bite.technology/menu/53" data-table="01" class="btn table-button bg-white aspect-square flex items-center justify-center rounded-2xl shadow-lg border border-gray-200">
+                <span class="text-5xl md:text-7xl font-bold text-gray-700">01</span>
+            </button>
+            <!-- Button 02 -->
+            <button data-url="https://bite.technology/menu/84" data-table="02" class="btn table-button bg-white aspect-square flex items-center justify-center rounded-2xl shadow-lg border border-gray-200">
+                <span class="text-5xl md:text-7xl font-bold text-gray-700">02</span>
+            </button>
+            <!-- Button 03 -->
+            <button data-url="https://bite.technology/menu/54" data-table="03" class="btn table-button bg-white aspect-square flex items-center justify-center rounded-2xl shadow-lg border border-gray-200">
+                <span class="text-5xl md:text-7xl font-bold text-gray-700">03</span>
+            </button>
+            <!-- Button 04 -->
+            <button data-url="https://bite.technology/menu/50" data-table="04" class="btn table-button bg-white aspect-square flex items-center justify-center rounded-2xl shadow-lg border border-gray-200">
+                <span class="text-5xl md:text-7xl font-bold text-gray-700">04</span>
+            </button>
         </div>
-    </div>
-    
-    <div id="table-modal" class="modal-overlay">
-        <div class="modal-content">
-            <button id="modal-close-btn">&times;</button>
-            <h2>Enter Table Number</h2>
-            <input type="text" id="modal-table-input" placeholder="_" autocomplete="off" readonly>
-            <div id="modal-suggestions"></div>
-            <button id="modal-send-btn">Send</button>
-            <div id="keypad">
-                <div class="keypad-row"><button class="keypad-btn" data-key="0"><span>0</span></button><button class="keypad-btn" data-key="1"><span>1</span></button><button class="keypad-btn" data-key="2"><span>2</span></button><button class="keypad-btn" data-key="3"><span>3</span></button><button class="keypad-btn" data-key="4"><span>4</span></button></div>
-                <div class="keypad-row"><button class="keypad-btn" data-key="5"><span>5</span></button><button class="keypad-btn" data-key="6"><span>6</span></button><button class="keypad-btn" data-key="7"><span>7</span></button><button class="keypad-btn" data-key="8"><span>8</span></button><button class="keypad-btn" data-key="9"><span>9</span></button></div>
-                <div class="keypad-row"><button class="keypad-btn key-char" data-key="B"><span>B</span></button><button class="keypad-btn key-char" data-key="C"><span>C</span></button><button class="keypad-btn key-char" data-key="F"><span>F</span></button><button class="keypad-btn key-char" data-key="G"><span>G</span></button><button class="keypad-btn key-char" data-key="H"><span>H</span></button></div>
-                <div class="keypad-row"><button class="keypad-btn key-space" data-key=" "><span>Space</span></button><button class="keypad-btn delete-key" data-key="backspace"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: white;"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path><line x1="18" y1="9" x2="12" y2="15"></line><line x1="12" y1="9" x2="18" y2="15"></line></svg></button></div>
-            </div>
-        </div>
+    </main>
+
+    <!-- Full-screen container for the QR code display, initially hidden -->
+    <div id="qr-view" class="fixed inset-0 bg-white flex-col items-center justify-center p-4 hidden">
+        <h2 class="text-4xl md:text-6xl font-bold text-gray-800 mb-4">Table <span id="table-number"></span></h2>
+        <!-- Canvas element where the QR code will be drawn -->
+        <canvas id="qr-code-canvas" class="rounded-xl shadow-2xl"></canvas>
+        <button id="back-button" class="mt-8 bg-gray-800 text-white font-bold py-3 px-8 rounded-full hover:bg-gray-700 transition-colors">
+            Back
+        </button>
     </div>
 
-    <div class="container">
-        <div class="header-section"><h1>Bite Sushi House</h1></div>
-        <button id="open-modal-btn">Enter Table Number</button>
-        <div id="button-grid"></div>
-    </div>
-    
+    <!-- QR Code generation library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            try {
-                const CORRECT_PASSCODE = "1416";
-                let enteredPasscode = "";
-                let appInitialized = false;
-
-                const passcodeOverlay = document.getElementById("passcode-overlay");
-                const passcodeContent = document.getElementById("passcode-content");
-                const passcodeDisplay = document.getElementById("passcode-display");
-                const passcodeDigits = document.querySelectorAll(".passcode-digit");
-                const passcodeKeypad = document.getElementById("passcode-keypad");
-                const mainContainer = document.querySelector(".container");
-
-                function setupReturnButton() {
-                    const existingBtn = passcodeContent.querySelector('.return-btn');
-                    if (existingBtn) {
-                        existingBtn.remove();
-                    }
-
-                    const lastLink = sessionStorage.getItem('lastOpenedLink');
-                    const lastTableName = sessionStorage.getItem('lastOpenedTableName');
-                    
-                    if (lastLink && lastTableName) {
-                        const returnBtn = document.createElement("button");
-                        returnBtn.className = "return-btn";
-                        returnBtn.innerHTML = `Return to last table: <strong>${lastTableName}</strong>`;
-                        returnBtn.addEventListener('click', () => {
-                            window.open(lastLink, '_blank');
-                        });
-                        passcodeContent.appendChild(returnBtn);
-                    }
-                }
-
-                function createPasscodeKeypad() {
-                    const keys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "", "0", "delete"];
-                    passcodeKeypad.innerHTML = "";
-                    keys.forEach(k => {
-                        const key = document.createElement("button");
-                        key.className = "passcode-key";
-                        if (k === "delete") {
-                            key.classList.add("delete-key");
-                            key.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path><line x1="18" y1="9" x2="12" y2="15"></line><line x1="12" y1="9" x2="18" y2="15"></line></svg>`;
-                            key.dataset.key = "delete";
-                        } else if (k === "") {
-                            key.style.visibility = "hidden";
-                        } else {
-                            key.textContent = k;
-                            key.dataset.key = k;
-                        }
-                        passcodeKeypad.appendChild(key);
-                    });
-                }
-
-                function updatePasscodeDisplay() {
-                    passcodeDigits.forEach((digit, index) => {
-                        digit.classList.toggle("filled", index < enteredPasscode.length);
-                    });
-                }
-
-                function checkPasscode() {
-                    if (enteredPasscode === CORRECT_PASSCODE) {
-                        passcodeOverlay.classList.add("unlocked");
-                        setTimeout(() => {
-                            passcodeOverlay.style.display = "none";
-                            mainContainer.classList.add("unlocked");
-                            if (!appInitialized) {
-                                initializeApp();
-                                appInitialized = true;
-                            }
-                        }, 400);
-                    } else if (enteredPasscode.length >= 4) { 
-                        passcodeDisplay.classList.add("shake");
-                        setTimeout(() => {
-                            passcodeDisplay.classList.remove("shake");
-                            enteredPasscode = "";
-                            updatePasscodeDisplay();
-                        }, 600);
-                    }
-                }
-                
-                function resetToPasscodeScreen() {
-                    mainContainer.classList.remove("unlocked");
-                    passcodeOverlay.style.display = "flex";
-                    passcodeOverlay.classList.remove("unlocked");
-                    enteredPasscode = "";
-                    updatePasscodeDisplay();
-                    setupReturnButton();
-                }
-                
-                passcodeKeypad.addEventListener("click", (e) => {
-                    const key = e.target.closest(".passcode-key");
-                    if (!key || !key.dataset.key) return;
-                    const keyValue = key.dataset.key;
-                    if (keyValue === "delete") {
-                        enteredPasscode = enteredPasscode.slice(0, -1);
-                    } else if (enteredPasscode.length < 4) {
-                        enteredPasscode += keyValue;
-                    }
-                    updatePasscodeDisplay();
-                    if (enteredPasscode.length === 4) {
-                        checkPasscode();
-                    }
-                });
-
-                createPasscodeKeypad();
-                setupReturnButton(); // Initial check on page load
-                updatePasscodeDisplay();
-
-                function initializeApp() {
-                    const tablesData = [ { "link": "https://bite.technology/menu/53/273", "name": " 01" }, { "link": "https://bite.technology/menu/53/274", "name": "01 B" }, { "link": "https://bite.technology/menu/53/275", "name": "01 C" }, { "link": "https://bite.technology/menu/53/276", "name": "01 F" }, { "link": "https://bite.technology/menu/53/277", "name": "01 G" }, { "link": "https://bite.technology/menu/53/278", "name": " 02 " }, { "link": "https://bite.technology/menu/53/279", "name": "02 B" }, { "link": "https://bite.technology/menu/53/280", "name": "02 C" }, { "link": "https://bite.technology/menu/53/281", "name": "02 F" }, { "link": "https://bite.technology/menu/53/282", "name": "02 G" }, { "link": "https://bite.technology/menu/53/283", "name": "02 H" }, { "link": "https://bite.technology/menu/53/284", "name": " 03" }, { "link": "https://bite.technology/menu/53/285", "name": "03 B" }, { "link": "https://bite.technology/menu/53/286", "name": "03 C" }, { "link": "https://bite.technology/menu/53/287", "name": "03 F" }, { "link": "https://bite.technology/menu/53/288", "name": " 05" }, { "link": "https://bite.technology/menu/53/289", "name": "05 B" }, { "link": "https://bite.technology/menu/53/290", "name": "05 C" }, { "link": "https://bite.technology/menu/53/291", "name": "05 F" }, { "link": "https://bite.technology/menu/53/292", "name": "05 G" }, { "link": "https://bite.technology/menu/53/293", "name": " 06" }, { "link": "https://bite.technology/menu/53/294", "name": "06 B" }, { "link": "https://bite.technology/menu/53/295", "name": "06 C" }, { "link": "https://bite.technology/menu/53/296", "name": "06 F" }, { "link": "https://bite.technology/menu/53/297", "name": "06 G" }, { "link": "https://bite.technology/menu/53/298", "name": " 07" }, { "link": "https://bite.technology/menu/53/299", "name": "07 B" }, { "link": "https://bite.technology/menu/53/300", "name": "07 C" }, { "link": "https://bite.technology/menu/53/301", "name": "07 F" }, { "link": "https://bite.technology/menu/53/302", "name": "07 G" }, { "link": "https://bite.technology/menu/53/303", "name": " 08" }, { "link": "https://bite.technology/menu/53/304", "name": "08 B" }, { "link": "https://bite.technology/menu/53/305", "name": "08 C" }, { "link": "https://bite.technology/menu/53/306", "name": "08 F" }, { "link": "https://bite.technology/menu/53/307", "name": "08 G" }, { "link": "https://bite.technology/menu/53/308", "name": " 09" }, { "link": "https://bite.technology/menu/53/309", "name": "09 B" }, { "link": "https://bite.technology/menu/53/310", "name": "09 C" }, { "link": "https://bite.technology/menu/53/311", "name": "09 F" }, { "link": "https://bite.technology/menu/53/312", "name": "09 G" }, { "link": "https://bite.technology/menu/53/313", "name": " 10" }, { "link": "https://bite.technology/menu/53/314", "name": "10 B" }, { "link": "https://bite.technology/menu/53/315", "name": "10 C" }, { "link": "https://bite.technology/menu/53/316", "name": "10 F" }, { "link": "https://bite.technology/menu/53/317", "name": " 11" }, { "link": "https://bite.technology/menu/53/318", "name": "11 B" }, { "link": "https://bite.technology/menu/53/319", "name": "11 C" }, { "link": "https://bite.technology/menu/53/320", "name": "11 F" }, { "link": "https://bite.technology/menu/53/321", "name": " 15" }, { "link": "https://bite.technology/menu/53/322", "name": "15 B" }, { "link": "https://bite.technology/menu/53/323", "name": "15 B" }, { "link": "https://bite.technology/menu/53/324", "name": "15 C" }, { "link": "https://bite.technology/menu/53/325", "name": "15 G" }, { "link": "https://bite.technology/menu/53/326", "name": " 16" }, { "link": "https://bite.technology/menu/53/327", "name": "16 B" }, { "link": "https://bite.technology/menu/53/328", "name": "16 C" }, { "link": "https://bite.technology/menu/53/329", "name": "16 G" }, { "link": "https://bite.technology/menu/53/330", "name": " 18" }, { "link": "https://bite.technology/menu/53/331", "name": " 19" }, { "link": "https://bite.technology/menu/53/332", "name": " 20" }, { "link": "https://bite.technology/menu/53/333", "name": " 20" }, { "link": "https://bite.technology/menu/53/334", "name": "20 B" }, { "link": "https://bite.technology/menu/53/335", "name": " 21" }, { "link": "https://bite.technology/menu/53/336", "name": "21 B" }, { "link": "https://bite.technology/menu/53/337", "name": " 22" }, { "link": "https://bite.technology/menu/53/338", "name": "22 B" }, { "link": "https://bite.technology/menu/53/339", "name": "22 C" }, { "link": "https://bite.technology/menu/53/340", "name": " 23" }, { "link": "https://bite.technology/menu/53/341", "name": "23 B" }, { "link": "https://bite.technology/menu/53/342", "name": "23 C" }, { "link": "https://bite.technology/menu/53/343", "name": " 25" }, { "link": "https://bite.technology/menu/53/344", "name": "25 B" }, { "link": "https://bite.technology/menu/53/345", "name": " 26" }, { "link": "https://bite.technology/menu/53/346", "name": "26 B" }, { "link": "https://bite.technology/menu/53/347", "name": " 31" }, { "link": "https://bite.technology/menu/53/348", "name": "31 B" }, { "link": "https://bite.technology/menu/53/349", "name": "31 C" }, { "link": "https://bite.technology/menu/53/350", "name": " 32" }, { "link": "https://bite.technology/menu/53/351", "name": "32 B" }, { "link": "https://bite.technology/menu/53/352", "name": "32 C" }, { "link": "https://bite.technology/menu/53/353", "name": " 33" }, { "link": "https://bite.technology/menu/53/354", "name": "33 B" }, { "link": "https://bite.technology/menu/53/355", "name": "33 C" }, { "link": "https://bite.technology/menu/53/356", "name": " 35" }, { "link": "https://bite.technology/menu/53/357", "name": "35 B" }, { "link": "https://bite.technology/menu/53/358", "name": "35 C" }, { "link": "https://bite.technology/menu/53/359", "name": " 36" }, { "link": "https://bite.technology/menu/53/360", "name": "36 B" }, { "link": "https://bite.technology/menu/53/361", "name": "36 C" }, { "link": "https://bite.technology/menu/53/362", "name": " 37" }, { "link": "https://bite.technology/menu/53/6462", "name": "37 B" }, { "link": "https://bite.technology/menu/53/6553", "name": "37 C" }, { "link": "https://bite.technology/menu/53/6645", "name": "38 " }, { "link": "https://bite.technology/menu/53/6738", "name": "38 B" }, { "link": "https://bite.technology/menu/53/6832", "name": "38 C" }, { "link": "https://bite.technology/menu/53/6927", "name": " 39" }, { "link": "https://bite.technology/menu/53/7023", "name": "39 B" }, { "link": "https://bite.technology/menu/53/7120", "name": " 40" }, { "link": "https://bite.technology/menu/53/7218", "name": "40 B" }, { "link": "https://bite.technology/menu/53/7317", "name": "40 C" }, { "link": "https://bite.technology/menu/53/7417", "name": " 41" }, { "link": "https://bite.technology/menu/53/7518", "name": "41 B" }, { "link": "https://bite.technology/menu/53/7620", "name": "41 C" }, { "link": "https://bite.technology/menu/53/7723", "name": " 42" }, { "link": "https://bite.technology/menu/53/7827", "name": "42 B" }, { "link": "https://bite.technology/menu/53/7932", "name": "42 C" } ];
-                    const buttonGrid = document.getElementById("button-grid"), modal = document.getElementById("table-modal"), openModalBtn = document.getElementById("open-modal-btn"), closeModalBtn = document.getElementById("modal-close-btn"), modalInput = document.getElementById("modal-table-input"), suggestionsContainer = document.getElementById("modal-suggestions"), keypad = document.getElementById("keypad"), sendBtn = document.getElementById("modal-send-btn");
-                    let isModalOpen = false;
-                    const openModal = () => { if (!isModalOpen) { modal.style.display = "flex"; isModalOpen = true; } };
-                    const closeModal = () => { if (isModalOpen) { modal.style.display = "none"; isModalOpen = false; modalInput.value = ""; suggestionsContainer.innerHTML = ""; sendBtn.style.display = "none"; } };
-                    openModalBtn.addEventListener("click", openModal); closeModalBtn.addEventListener("click", closeModal); modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
-                    const cleanNameForDisplay = (name) => name.trim().replace(/\s+/g, " "), normalizeString = (str) => str.trim().replace(/\s+/g, "").toLowerCase();
-                    
-                    function renderMainGridButtons(tables) {
-                        buttonGrid.innerHTML = "";
-                        tables.forEach(table => {
-                            const btn = document.createElement("button");
-                            btn.className = "table-btn";
-                            const span = document.createElement("span");
-                            span.textContent = cleanNameForDisplay(table.name);
-                            btn.appendChild(span);
-                            btn.addEventListener("click", (e) => {
-                                e.currentTarget.classList.add("selected");
-                                
-                                sessionStorage.setItem('lastOpenedLink', table.link);
-                                sessionStorage.setItem('lastOpenedTableName', cleanNameForDisplay(table.name));
-                                
-                                window.open(table.link, '_blank');
-                                
-                                setTimeout(() => {
-                                    e.currentTarget.classList.remove("selected");
-                                    resetToPasscodeScreen();
-                                }, 500);
-                            });
-                            buttonGrid.appendChild(btn);
-                        });
-                    }
-                    
-                    function navigateToTable(tableName) {
-                        const match = tablesData.find(t => normalizeString(t.name) === normalizeString(tableName));
-                        if (match) {
-                            sessionStorage.setItem('lastOpenedLink', match.link);
-                            sessionStorage.setItem('lastOpenedTableName', cleanNameForDisplay(match.name));
-                            
-                            window.open(match.link, '_blank');
-                            closeModal();
-                            
-                            setTimeout(resetToPasscodeScreen, 500);
-                        }
-                    }
-
-                    keypad.addEventListener("click", (e) => { const btn = e.target.closest(".keypad-btn"); if (!btn) return; const key = btn.dataset.key; if (key === "backspace") modalInput.value = modalInput.value.slice(0, -1); else modalInput.value += key; modalInput.dispatchEvent(new Event("input", { bubbles: true })); });
-                    sendBtn.addEventListener("click", () => { if (modalInput.value.trim()) navigateToTable(modalInput.value.trim()); });
-                    modalInput.addEventListener("input", () => { const searchTerm = normalizeString(modalInput.value); suggestionsContainer.innerHTML = ""; sendBtn.style.display = "none"; if (!searchTerm) return; const matches = tablesData.filter(t => normalizeString(t.name).startsWith(searchTerm)); if (matches.length === 1 && normalizeString(matches[0].name) === searchTerm) sendBtn.style.display = "block"; matches.slice(0, 5).forEach(table => { if (normalizeString(table.name) === searchTerm) return; const item = document.createElement("div"); item.className = "suggestion-item"; item.textContent = cleanNameForDisplay(table.name); item.addEventListener("click", (e) => { e.currentTarget.classList.add("selected"); navigateToTable(cleanNameForDisplay(table.name)); }); suggestionsContainer.appendChild(item); }); });
-                    renderMainGridButtons(tablesData);
-                }
-                
-                updatePasscodeDisplay();
-
-            } catch (error) {
-                document.body.innerHTML = `<div style="color: white; text-align: center; padding: 40px;">An error occurred. Please try restarting the application.</div>`;
-                console.error("Application Error:", error);
-            }
-        });
-
+        // It's good practice to wait for the DOM to be fully loaded
         document.addEventListener('DOMContentLoaded', () => {
-            const setupPWA = () => {
-                const manifest = {
-                    "name": "Bite Sushi House",
-                    "short_name": "Bite Sushi",
-                    "start_url": ".",
-                    "display": "standalone",
-                    "background_color": "#000000",
-                    "theme_color": "#000000",
-                    "description": "Bite Sushi House Table Selection.",
-                    "icons": [{
-                        "src": "https://placehold.co/192x192/00ff9b/0a0f1a?text=Bite",
-                        "type": "image/png",
-                        "sizes": "192x192"
-                    }, {
-                        "src": "https://placehold.co/512x512/00ff9b/0a0f1a?text=Bite",
-                        "type": "image/png",
-                        "sizes": "512x512"
-                    }]
-                };
-                const manifestURL = 'data:application/manifest+json;base64,' + btoa(unescape(encodeURIComponent(JSON.stringify(manifest))));
-                document.getElementById('manifest-link').setAttribute('href', manifestURL);
+            // Get references to the DOM elements
+            const buttonView = document.getElementById('button-view');
+            const qrView = document.getElementById('qr-view');
+            const tableButtons = document.querySelectorAll('.table-button');
+            const qrCanvas = document.getElementById('qr-code-canvas');
+            const tableNumberSpan = document.getElementById('table-number');
+            const backButton = document.getElementById('back-button');
+
+            // Function to show the QR code view
+            const showQrCode = (url, table) => {
+                // Update the table number display
+                tableNumberSpan.textContent = table;
+
+                // Check if QRCode object is available before using it
+                if (typeof QRCode !== 'undefined') {
+                    // Generate the QR code
+                    QRCode.toCanvas(qrCanvas, url, {
+                        width: Math.min(window.innerWidth * 0.8, window.innerHeight * 0.6, 400), // Responsive QR code size
+                        margin: 2,
+                        color: {
+                            dark: '#111827', // dark gray
+                            light: '#FFFFFFFF' // white
+                        }
+                    }, function (error) {
+                        if (error) console.error(error);
+                        console.log('QR code generated successfully!');
+                    });
+
+                    // Switch views
+                    buttonView.classList.add('hidden');
+                    qrView.classList.remove('hidden');
+                    qrView.classList.add('flex');
+                } else {
+                    console.error('QRCode library is not loaded.');
+                }
             };
-            setupPWA();
+
+            // Function to show the main button grid view
+            const showButtons = () => {
+                buttonView.classList.remove('hidden');
+                qrView.classList.add('hidden');
+                qrView.classList.remove('flex');
+            };
+
+            // Add click event listeners to all table buttons
+            tableButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const url = button.dataset.url;
+                    const table = button.dataset.table;
+                    showQrCode(url, table);
+                });
+            });
+
+            // Add click event listener to the back button
+            backButton.addEventListener('click', showButtons);
         });
     </script>
+
 </body>
 </html>
+
